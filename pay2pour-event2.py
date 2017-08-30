@@ -7,16 +7,22 @@ import time
 import grovepi
 
 
-web3 = Web3(HTTPProvider("http://192.168.1.139:8545", request_kwargs={'timeout': 5}))
+web3 = Web3(HTTPProvider("http://192.168.1.112:8545", request_kwargs={'timeout': 5}))
 
 global currentblock
 global numberofshots
 global pouring
 global button
+global relay
+
 currentblock = web3.eth.blockNumber
 numberofshots = 0
 pouring = False
-button = 3
+button = 2
+relay = 3
+
+grovepi.pinMode(button,"INPUT")
+grovepi.pinMode(relay,"OUTPUT")
 
 def new_block_callback(block_number):
        global numberofshots
@@ -49,13 +55,24 @@ def poll_button():
 
       if pouring == False:
         if grovepi.digitalRead(button) == 1 :
-          pouring = True
-          numberofshots -= 1
+          if numberofshots >=1 :
+             pouring = True
+             numberofshots -= 1
+          else:
+             print("No shots available")
 
 def do_pouring():
        global pouring
-       time.sleep(1)
-       pouring = False
+       global relay
+       global numberofshots
+
+       if pouring == True:
+         if numberofshots >= 1:
+           print("Starting pour")
+           grovepi.digitalWrite(relay, 1)
+           time.sleep(10)
+           grovepi.digitalWrite(relay, 0)
+           pouring = False
 
 grovepi.pinMode(button,"INPUT")
 
