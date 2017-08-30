@@ -8,7 +8,9 @@ import time
 web3 = Web3(HTTPProvider("http://192.168.1.139:8545", request_kwargs={'timeout': 5}))
 
 global currentblock
+global numberofshots
 currentblock = web3.eth.blockNumber
+numberofshots = 0
 
 def new_block_callback(block_number):
        print("New Block: {0}".format(block_number))
@@ -24,6 +26,7 @@ def new_block_callback(block_number):
    	   if mytx['to'] == u'0x63c1d076e990f34b288a4fba56606e0185f4f641': 
    		print("Ma Fucking Working")
                 print(mytx)
+                ++numberofshots
 
 while True:
       newblock = web3.eth.blockNumber
