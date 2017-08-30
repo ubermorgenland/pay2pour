@@ -48,33 +48,30 @@ def new_block_callback(block_number):
 #                numberofshots += (mytx['value'] / 1000000000000000L)
                 numberofshots += orderedshots
 
-def poll_button():
-      global pouring
-      global numberofshots
-      global button
-
-      if pouring == False:
-        if grovepi.digitalRead(button) == 1 :
-          if numberofshots >=1 :
-             pouring = True
-             numberofshots -= 1
-          else:
-             print("No shots available")
 
 def do_pouring():
        global pouring
        global relay
        global numberofshots
-
-       if pouring == True:
+       global button
+       print numberofshots
+       print grovepi.digitalRead(button)
+       if grovepi.digitalRead(button) == 1:
+	 print grovepi.digitalRead(button)
          if numberofshots >= 1:
            print("Starting pour")
+           numberofshots -= 1
+	   print("decremented")
            grovepi.digitalWrite(relay, 1)
+	   print("an")
+	   print("sleep")
            time.sleep(10)
+	   print("sleep done")
            grovepi.digitalWrite(relay, 0)
            pouring = False
-
-grovepi.pinMode(button,"INPUT")
+	   print("aus")
+         else:
+           print "No shots available"
 
 while True:
       newblock = web3.eth.blockNumber
@@ -84,7 +81,6 @@ while True:
       
 #      print("Looping: " + str(web3.eth.blockNumber))
       currentblock = newblock
-      poll_button()
       do_pouring()
       setText("Block: {0}\nTokens: {1}".format(currentblock, numberofshots))
       time.sleep(1)
