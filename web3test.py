@@ -4,7 +4,7 @@ from grove_rgb_lcd import *
 from grovepi import *
 
 
-web3 = Web3(HTTPProvider("http://192.168.1.146:8545", request_kwargs={'timeout': 5}))
+web3 = Web3(HTTPProvider("http://192.168.1.139:8545", request_kwargs={'timeout': 5}))
 
 global currentblock
 currentblock = 0
