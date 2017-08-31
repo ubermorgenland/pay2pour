@@ -1,13 +1,14 @@
 from web3 import Web3, HTTPProvider, IPCProvider
 from web3.utils import *
-#from grove_rgb_lcd import *
+from grove_rgb_lcd import *
 from cytoolz.functoolz import curry
 import collections
 import time
 import grovepi
+from subprocess import call
 
 
-web3 = Web3(HTTPProvider("https://52.169.42.101:30303"))
+web3 = Web3(HTTPProvider("http://173.212.249.235:8545", request_kwargs={'timeout': 5}))
 
 global currentblock
 global numberofshots
@@ -18,8 +19,8 @@ global relay
 currentblock = web3.eth.blockNumber
 numberofshots = 0
 pouring = False
-button = 2
-relay = 3
+button = 8
+relay = 7
 
 grovepi.pinMode(button,"INPUT")
 grovepi.pinMode(relay,"OUTPUT")
@@ -67,8 +68,11 @@ def do_pouring():
            grovepi.digitalWrite(relay, 0)
            pouring = False
 	   print("aus")
-         else:
+	 else:
            print "No shots available"
+       elif grovepi.digitalRead(button) == -1:
+ 	   call(["avrdude", "-c", "gpio", "-p", "m328p"])
+	   time.sleep(.5)
 
 while True:
       newblock = web3.eth.blockNumber
@@ -78,5 +82,5 @@ while True:
       
       currentblock = newblock
       do_pouring()
-#      setText("Block: {0}\nTokens: {1}".format(currentblock, numberofshots))
+      setText("Block: {0}\nTokens: {1}".format(currentblock, numberofshots))
       time.sleep(1)
