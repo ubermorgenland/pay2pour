@@ -8,7 +8,7 @@ import grovepi
 from subprocess import call
 
 
-web3 = Web3(HTTPProvider("http://173.212.249.235:8545", request_kwargs={'timeout': 5}))
+web3 = Web3(HTTPProvider("http://173.212.249.235:8545"))
 
 global currentblock
 global numberofshots
