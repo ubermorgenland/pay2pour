@@ -6,16 +6,17 @@ import collections
 import time
 import grovepi
 from subprocess import call
+import requests 
 
 for _ in range(10):
     try:
 	web3 = Web3(HTTPProvider("http://173.212.249.235:2000"))
         break
-    except ReadTimeout:
+    except requests.exceptions.ReadTimeout:
 	print "ReadTimeout"
 	time.sleep(1)
         pass
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
 	print "ConnectionError"
 	time.sleep(1)
 	pass
@@ -26,8 +27,20 @@ global pouring
 global button
 global relay
 
-currentblock = web3.eth.blockNumber
-numberofshots = 0
+currentblock = 0
+for _ in range(10):
+  try:
+    currentblock = web3.eth.blockNumber
+    break
+  except requests.exceptions.ReadTimeout:
+    print "ReadTimeout"
+    time.sleep(1)
+    pass
+  except requests.exceptions.ConnectionError:
+    print "ConnectionError"
+    time.sleep(1)
+    pass
+numberofshots = 5
 pouring = False
 button = 8
 relay = 7
@@ -73,7 +86,7 @@ def do_pouring():
            grovepi.digitalWrite(relay, 1)
 	   print("an")
 	   print("sleep")
-           time.sleep(10)
+           time.sleep(12)
 	   print("sleep done")
            grovepi.digitalWrite(relay, 0)
            pouring = False
@@ -85,7 +98,18 @@ def do_pouring():
 	   time.sleep(.5)
 
 while True:
-      newblock = web3.eth.blockNumber
+      for _ in range(10):
+        try:
+          newblock = web3.eth.blockNumber
+          break
+        except requests.exceptions.ReadTimeout:
+          print "ReadTimeout"
+          time.sleep(1)
+          pass
+        except requests.exceptions.ConnectionError:
+          print "ConnectionError"
+          time.sleep(1)
+          pass
       if (currentblock < newblock):
         for block in range(currentblock, newblock):
            new_block_callback(block)
