@@ -98,6 +98,7 @@ def do_pouring():
 	   time.sleep(.5)
 
 while True:
+      newblock = 0
       for _ in range(10):
         try:
           newblock = web3.eth.blockNumber
