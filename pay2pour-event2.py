@@ -7,8 +7,18 @@ import time
 import grovepi
 from subprocess import call
 
-
-web3 = Web3(HTTPProvider("http://173.212.249.235:8545"))
+for _ in range(10):
+    try:
+	web3 = Web3(HTTPProvider("http://173.212.249.235:2000"))
+        break
+    except ReadTimeout:
+	print "ReadTimeout"
+	time.sleep(1)
+        pass
+    except ConnectionError:
+	print "ConnectionError"
+	time.sleep(1)
+	pass
 
 global currentblock
 global numberofshots
@@ -35,7 +45,7 @@ def new_block_callback(block_number):
          print(type(mytx))
          if not isinstance(mytx, curry):
            print(mytx['to'])
-   	   if mytx['to'] == u'0x5806717dd97a60e47ee2029467e9d8aea10c4849': 
+   	   if mytx['to'] == u'0xefb4844e94238b4fa96967cea9cb069b082fbbb7': 
    		print("Ma Fucking Working")
                 print(mytx)
                 receipt = web3.eth.getTransactionReceipt(tx)
