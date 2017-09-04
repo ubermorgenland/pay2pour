@@ -117,5 +117,8 @@ while True:
       
       currentblock = newblock
       do_pouring()
-      setText("Block: {0}\nTokens: {1}".format(currentblock, numberofshots))
+      try:
+        setText("Block: {0}\nTokens: {1}".format(currentblock, numberofshots))
+      except IOError:
+	print "IOError"
       time.sleep(1)
